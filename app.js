@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
 var config = require('./config/database');
+var pages = require('./routes/pages.js');
 
 // Connection Mongodb
 mongoose.connect(config.database ,{useNewUrlParser: true});
@@ -23,12 +24,12 @@ app.set('view engine', 'ejs');
 // set public default
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Home / index
-app.get('/', function(req, res){
-    res.render("index", {
-        title: 'Home'
-    })
-});
+// set routes index
+app.use('/', pages);
+
+// set routes admin area
+var adminPages = require('./routes/admin_pages.js');
+app.use('/admin/pages', adminPages);
 
 // Setup server
 var port = 3000;
