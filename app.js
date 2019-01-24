@@ -1,5 +1,17 @@
 var express = require('express');
 var path = require('path');
+var mongoose = require('mongoose');
+var config = require('./config/database');
+
+// Connection Mongodb
+mongoose.connect(config.database ,{useNewUrlParser: true});
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+  console.log("connected to database")
+});
 
 // Initial 
 var app = express();
