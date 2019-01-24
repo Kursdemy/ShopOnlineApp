@@ -3,6 +3,8 @@ var path = require('path');
 var mongoose = require('mongoose');
 var config = require('./config/database');
 var pages = require('./routes/pages.js');
+var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
 
 // Connection Mongodb
 mongoose.connect(config.database ,{useNewUrlParser: true});
@@ -30,6 +32,43 @@ app.use('/', pages);
 // set routes admin area
 var adminPages = require('./routes/admin_pages.js');
 app.use('/admin/pages', adminPages);
+
+// setup body parser middleware
+app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
+
+// setup express session middleware
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true}
+}));
+
+// setup express validator middleware
+app.use(expressValidator({
+    errorFormatter: function (param, msg, value) {
+        var namespace = param.split('.')
+            , root = namespace.shift()
+            , formParam = root;
+
+        while (namespace.length) {
+            formParam += '[' + messages.shift() + ']';
+        }
+        return {
+            param: formParam,
+            msg: msg,
+            value: value
+        };
+    }
+}));
+
+// setup express messages middleware
+app.use(require('connect-flash')());
+app.use(function(req, res, next) {
+    res.locals.messages = require('express-messages')(req, res);
+    next();
+});
 
 // Setup server
 var port = 3000;
