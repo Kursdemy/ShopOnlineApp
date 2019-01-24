@@ -25,7 +25,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Home / index
 app.get('/', function(req, res){
-    res.send("it's works")
+    res.render("index", {
+        title: 'Home'
+    })
 });
 
 // Setup server
