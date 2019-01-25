@@ -5,6 +5,7 @@ var config = require('./config/database');
 var pages = require('./routes/pages.js');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
+var session = require('express-session')
 
 // Connection Mongodb
 mongoose.connect(config.database ,{useNewUrlParser: true});
